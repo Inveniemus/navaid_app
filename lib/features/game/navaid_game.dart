@@ -4,8 +4,10 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/app_colors.dart';
 import 'components/airplane_component.dart';
 import 'components/beacon_component.dart';
+import 'components/trail_component.dart';
 import 'models/airplane_model.dart';
 
 class NavaidGame extends FlameGame {
@@ -21,9 +23,10 @@ class NavaidGame extends FlameGame {
   late final AirplaneComponent _airplaneComponent;
   late final AirplaneModel _airplaneModel;
   late final BeaconComponent _beacon;
+  late final TrailComponent _trailComponent;
 
   @override
-  Color backgroundColor() => const Color(0xFF003300);
+  Color backgroundColor() => AppColors.mapBackground;
 
   @override
   Future<void> onLoad() async {
@@ -34,6 +37,9 @@ class NavaidGame extends FlameGame {
     world.add(_beacon);
 
     _airplaneModel = AirplaneModel(position: Vector2(-3, 3), heading: 0);
+
+    _trailComponent = TrailComponent(model: _airplaneModel);
+    world.add(_trailComponent);
 
     _airplaneComponent = AirplaneComponent();
     world.add(_airplaneComponent);

@@ -2,8 +2,9 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'features/instruments/widgets/instrument_panel.dart';
 import 'features/game/navaid_game.dart';
-import 'features/instruments/widgets/rmi_overlay.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,7 @@ class _GameScreenState extends State<GameScreen> {
         game: game,
         overlayBuilderMap: {
           'InstrumentPanel': (BuildContext context, NavaidGame gameRef) {
-            return RmiOverlayWidget(game: gameRef);
+            return InstrumentPanel(game: gameRef);
           },
         },
         initialActiveOverlays: const ['InstrumentPanel'],

@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../core/app_colors.dart';
+
 class RMIMarksPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -11,8 +13,8 @@ class RMIMarksPainter extends CustomPainter {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
-    final whiteTrianglePaint = Paint()..color = Colors.white;
-    final orangeTrianglePaint = Paint()..color = Colors.orange;
+    final whiteTrianglePaint = Paint()..color = AppColors.white;
+    final orangeTrianglePaint = Paint()..color = AppColors.orange;
 
     for (int i = 0; i < 8; i++) {
       final path = Path();
@@ -48,14 +50,14 @@ class RMIRosePainter extends CustomPainter {
     canvas.rotate(-currentHeading * math.pi / 180);
 
     final ringPaint = Paint()
-      ..color = const Color(0xFF1A1A1A)
+      ..color = AppColors.instrumentRing
       ..style = PaintingStyle.stroke
       ..strokeWidth = 35;
 
     canvas.drawCircle(Offset.zero, radius - 20, ringPaint);
 
     final tickPaint = Paint()
-      ..color = Colors.white
+      ..color = AppColors.white
       ..strokeCap = StrokeCap.square;
 
     for (int i = 0; i < 360; i += 5) {
@@ -77,7 +79,7 @@ class RMIRosePainter extends CustomPainter {
           text: TextSpan(
             text: label,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
               fontFamily: 'Courier',
@@ -129,17 +131,17 @@ class RMIBugPainter extends CustomPainter {
     canvas.rotate((targetHeading - currentHeading) * math.pi / 180);
 
     final bugPaint = Paint()
-      ..color = Colors.orange
+      ..color = AppColors.orange
       ..style = PaintingStyle.fill;
 
     final path = Path();
-    path.moveTo(-8, -radius + 5);
-    path.lineTo(8, -radius + 5);
+    path.moveTo(-8, -radius + 18);
     path.lineTo(8, -radius + 18);
-    path.lineTo(3, -radius + 18);
-    path.lineTo(0, -radius + 12);
-    path.lineTo(-3, -radius + 18);
-    path.lineTo(-8, -radius + 18);
+    path.lineTo(8, -radius + 5);
+    path.lineTo(3, -radius + 5);
+    path.lineTo(0, -radius + 11);
+    path.lineTo(-3, -radius + 5);
+    path.lineTo(-8, -radius + 5);
     path.close();
 
     canvas.drawPath(path, bugPaint);
@@ -167,27 +169,21 @@ class RMINeedlePainter extends CustomPainter {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
-    // L'aiguille pointe vers le relèvement (Bearing)
-    // On doit soustraire le cap actuel car tout l'instrument tourne
     canvas.rotate((bearing - currentHeading) * math.pi / 180);
 
     final paint = Paint()
-      ..color = const Color(0xFFFFD700) // Jaune Or (ADF standard)
+      ..color = AppColors.adfNeedle
       ..style = PaintingStyle.fill
       ..strokeWidth = 2;
 
-    // Dessin de la flèche (Pointe)
     final headPath = Path();
-    headPath.moveTo(0, -radius + 20); // Pointe
+    headPath.moveTo(0, -radius + 20);
     headPath.lineTo(-6, -radius + 45);
     headPath.lineTo(6, -radius + 45);
     headPath.close();
     canvas.drawPath(headPath, paint);
 
-    // Corps de l'aiguille (Traversant)
-    // Partie avant
     canvas.drawRect(Rect.fromCenter(center: Offset(0, -radius / 2 + 10), width: 3, height: radius - 40), paint);
-    // Partie arrière (Queue)
     canvas.drawRect(Rect.fromCenter(center: Offset(0, radius / 2 - 5), width: 3, height: radius - 30), paint);
 
     canvas.restore();
@@ -208,18 +204,15 @@ class RMIAirplanePainter extends CustomPainter {
     canvas.translate(center.dx, center.dy);
 
     final paint = Paint()
-      ..color = Colors.orange
+      ..color = AppColors.orange
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
     final path = Path();
-    // Fuselage
     path.moveTo(0, -8);
     path.lineTo(0, 12);
-    // Ailes
     path.moveTo(-12, -2);
     path.lineTo(12, -2);
-    // Empennage (Queue)
     path.moveTo(-5, 8);
     path.lineTo(5, 8);
 
