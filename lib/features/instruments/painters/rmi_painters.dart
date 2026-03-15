@@ -10,6 +10,35 @@ class RMIMarksPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
+    final double chamfer = 30.0;
+
+    final outerBezel = Path()
+      ..moveTo(chamfer, 0)
+      ..lineTo(size.width - chamfer, 0)
+      ..lineTo(size.width, chamfer)
+      ..lineTo(size.width, size.height - chamfer)
+      ..lineTo(size.width - chamfer, size.height)
+      ..lineTo(chamfer, size.height)
+      ..lineTo(0, size.height - chamfer)
+      ..lineTo(0, chamfer)
+      ..close();
+
+    final innerHole = Path()
+      ..addOval(Rect.fromCircle(center: center, radius: radius - 2));
+
+    final bezelPath = Path.combine(PathOperation.difference, outerBezel, innerHole);
+
+    final bezelPaint = Paint()
+      ..color = const Color(0xFF1A1A1A)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(bezelPath, bezelPaint);
+
+    final bezelBorderPaint = Paint()
+      ..color = const Color(0xFF333333)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawPath(outerBezel, bezelBorderPaint);
+
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
@@ -18,9 +47,9 @@ class RMIMarksPainter extends CustomPainter {
 
     for (int i = 0; i < 8; i++) {
       final path = Path();
-      path.moveTo(0, -radius + 10);
-      path.lineTo(-5, -radius);
-      path.lineTo(5, -radius);
+      path.moveTo(0, -radius + 12);
+      path.lineTo(-5, -radius + 2);
+      path.lineTo(5, -radius + 2);
       path.close();
 
       canvas.drawPath(path, i == 0 ? orangeTrianglePaint : whiteTrianglePaint);
@@ -35,9 +64,7 @@ class RMIMarksPainter extends CustomPainter {
 }
 
 class RMIRosePainter extends CustomPainter {
-  final double currentHeading;
-
-  RMIRosePainter({required this.currentHeading});
+  RMIRosePainter();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -46,8 +73,6 @@ class RMIRosePainter extends CustomPainter {
 
     canvas.save();
     canvas.translate(center.dx, center.dy);
-
-    canvas.rotate(-currentHeading * math.pi / 180);
 
     final ringPaint = Paint()
       ..color = AppColors.instrumentRing
@@ -101,24 +126,19 @@ class RMIRosePainter extends CustomPainter {
         tickPaint.strokeWidth = 0.5;
         canvas.drawLine(Offset(0, -radius + 5), Offset(0, -radius + 10), tickPaint);
       }
-
       canvas.restore();
     }
-
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant RMIRosePainter oldDelegate) {
-    return oldDelegate.currentHeading != currentHeading;
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class RMIBugPainter extends CustomPainter {
-  final double currentHeading;
   final double targetHeading;
 
-  RMIBugPainter({required this.currentHeading, required this.targetHeading});
+  RMIBugPainter({required this.targetHeading});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -128,7 +148,7 @@ class RMIBugPainter extends CustomPainter {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
-    canvas.rotate((targetHeading - currentHeading) * math.pi / 180);
+    canvas.rotate(targetHeading * math.pi / 180);
 
     final bugPaint = Paint()
       ..color = AppColors.orange
@@ -150,16 +170,14 @@ class RMIBugPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant RMIBugPainter oldDelegate) {
-    return oldDelegate.currentHeading != currentHeading ||
-        oldDelegate.targetHeading != targetHeading;
+    return oldDelegate.targetHeading != targetHeading;
   }
 }
 
 class RMINeedlePainter extends CustomPainter {
-  final double currentHeading;
   final double bearing;
 
-  RMINeedlePainter({required this.currentHeading, required this.bearing});
+  RMINeedlePainter({required this.bearing});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -169,7 +187,7 @@ class RMINeedlePainter extends CustomPainter {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
-    canvas.rotate((bearing - currentHeading) * math.pi / 180);
+    canvas.rotate(bearing * math.pi / 180);
 
     final paint = Paint()
       ..color = AppColors.adfNeedle
@@ -191,7 +209,7 @@ class RMINeedlePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant RMINeedlePainter oldDelegate) {
-    return oldDelegate.currentHeading != currentHeading || oldDelegate.bearing != bearing;
+    return oldDelegate.bearing != bearing;
   }
 }
 
@@ -217,6 +235,41 @@ class RMIAirplanePainter extends CustomPainter {
     path.lineTo(5, 8);
 
     canvas.drawPath(path, paint);
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class RMIKnobPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    final basePaint = Paint()
+      ..color = AppColors.instrumentGrey
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, radius, basePaint);
+
+    final topPaint = Paint()
+      ..color = AppColors.instrumentBackground
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(center, radius - 4, topPaint);
+
+    final ridgePaint = Paint()
+      ..color = AppColors.orange
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+
+    for (int i = 0; i < 12; i++) {
+      canvas.drawLine(Offset(0, radius - 5), Offset(0, radius), ridgePaint);
+      canvas.rotate(math.pi / 6);
+    }
     canvas.restore();
   }
 

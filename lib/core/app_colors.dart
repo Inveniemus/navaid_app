@@ -8,6 +8,7 @@ class AppColors {
   // Instruments
   static const Color instrumentBackground = Color(0xFF111111);
   static const Color instrumentRing = Color(0xFF1A1A1A);
+  static const Color instrumentGrey = Color(0xFF555555);
   static const Color adfNeedle = Color(0xFFFFD700);
 
   // Carte / Jeu
