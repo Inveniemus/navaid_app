@@ -70,11 +70,13 @@ class _StopwatchWidgetState extends State<StopwatchWidget> {
     return GestureDetector(
       onTap: _handleTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: ShapeDecoration(
           color: Colors.black,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.white, width: 2),
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+            side: BorderSide(color: AppColors.instrumentGrey, width: 1),
+          ),
         ),
         child: Text(
           _displayTime,

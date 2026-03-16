@@ -17,7 +17,7 @@ class AirplaneModel {
     this.turnRate = 3.0,
   }) : _lastTrailPoint = position.clone();
 
-  void update(double dt, double targetHeading) {
+  void updateHeading(double dt, double targetHeading) {
     double error = ((targetHeading - heading + 540) % 360) - 180;
     double maxTurn = turnRate * dt;
 
@@ -31,12 +31,15 @@ class AirplaneModel {
       }
     }
     heading = (heading + 360) % 360;
+  }
 
+  Vector2 get airVelocity {
     double angleRad = (heading - 90) * (math.pi / 180);
-    double distanceNm = (speed / 3600) * dt;
+    return Vector2(speed * math.cos(angleRad), speed * math.sin(angleRad));
+  }
 
-    position.x += distanceNm * math.cos(angleRad);
-    position.y += distanceNm * math.sin(angleRad);
+  void updatePosition(Vector2 groundMovement) {
+    position.add(groundMovement);
 
     if (position.distanceTo(_lastTrailPoint) > 0.05) {
       trailPoints.add(position.clone());
