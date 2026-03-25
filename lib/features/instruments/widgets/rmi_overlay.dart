@@ -51,7 +51,7 @@ class _RmiOverlayWidgetState extends State<RmiOverlayWidget> {
                           builder: (context, targetHdg, child) {
                             return CustomPaint(
                               size: const Size(250, 250),
-                              painter: RMIBugPainter(targetHeading: targetHdg),
+                              painter: RMIBugPainter(targetHeading: targetHdg.round()),
                             );
                           },
                         ),
@@ -86,10 +86,10 @@ class _RmiOverlayWidgetState extends State<RmiOverlayWidget> {
                 child: GestureDetector(
                   onTapUp: (details) {
                     if (details.localPosition.dx < 25) {
-                      widget.game.targetHeading.value = (widget.game.targetHeading.value - 1 + 360) % 360;
+                      widget.game.targetHeading.value = ((widget.game.targetHeading.value - 1 + 360) % 360).roundToDouble();
                     }
                     else {
-                      widget.game.targetHeading.value = (widget.game.targetHeading.value + 1) % 360;
+                      widget.game.targetHeading.value = ((widget.game.targetHeading.value + 1) % 360).roundToDouble();
                     }
                   },
 
@@ -101,6 +101,7 @@ class _RmiOverlayWidgetState extends State<RmiOverlayWidget> {
 
                   onPanEnd: (details) {
                     widget.game.bugTurnRate = 0.0;
+                    widget.game.targetHeading.value = widget.game.targetHeading.value.roundToDouble();
                   },
 
                   child: CustomPaint(

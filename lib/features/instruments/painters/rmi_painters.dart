@@ -136,7 +136,7 @@ class RMIRosePainter extends CustomPainter {
 }
 
 class RMIBugPainter extends CustomPainter {
-  final double targetHeading;
+  final int targetHeading;
 
   RMIBugPainter({required this.targetHeading});
 

@@ -53,7 +53,7 @@ class WindIndicatorComponent extends HudMarginComponent with HasGameReference<Na
     final dir = atmosphere.windDirection.round().toString().padLeft(3, '0');
 
     if (speed == 0) {
-      _textComponent.text = 'CALM';
+      _textComponent.text = 'WIND\nCALM';
     } else {
       _textComponent.text = '$dir°/${speed}kt';
     }

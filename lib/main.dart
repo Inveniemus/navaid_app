@@ -1,9 +1,9 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'features/instruments/widgets/instrument_panel.dart';
-import 'features/game/navaid_game.dart';
+import 'core/app_theme.dart';
+import 'features/menu/landing_page.dart';
+import 'features/menu/sandbox_form_page.dart';
 
 
 void main() {
@@ -11,48 +11,22 @@ void main() {
   runApp(const ProviderScope(child: NavaidApp()));
 }
 
-class NavaidApp extends StatelessWidget {
+class NavaidApp extends ConsumerWidget {
   const NavaidApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(appThemeProvider);
+    
     return MaterialApp(
       title: 'IFR Trainer',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const GameScreen(),
-    );
-  }
-}
-
-class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
-
-  @override
-  State<GameScreen> createState() => _GameScreenState();
-}
-
-class _GameScreenState extends State<GameScreen> {
-  late final NavaidGame game;
-
-  @override
-  void initState() {
-    super.initState();
-    game = NavaidGame();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GameWidget(
-        game: game,
-        overlayBuilderMap: {
-          'InstrumentPanel': (BuildContext context, NavaidGame gameRef) {
-            return InstrumentPanel(game: gameRef);
-          },
-        },
-        initialActiveOverlays: const ['InstrumentPanel'],
-      ),
+      theme: theme.darkTheme,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LandingPage(),
+        '/sandbox': (context) => const SandboxFormPage(),
+      },
     );
   }
 }

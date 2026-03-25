@@ -12,12 +12,15 @@ import 'components/beacon_component.dart';
 import 'components/trail_component.dart';
 import 'models/airplane_model.dart';
 import 'models/atmospheric_model.dart';
+import 'models/game_configuration.dart';
 
 class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
+  final GameConfiguration config;
+
   final ValueNotifier<double> currentHeading = ValueNotifier(0.0);
   final ValueNotifier<double> targetHeading = ValueNotifier(360.0);
 
-  final ValueNotifier<double> bearingToStation = ValueNotifier(45.0);
+  final ValueNotifier<double> bearingToStation = ValueNotifier(90.0);
 
   double bugTurnRate = 0.0;
 
@@ -30,11 +33,11 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
   late final TrailComponent _trail;
   late final WindIndicatorComponent _windIndicator;
 
-  double _zoomLevel = 40.0;
-  final double _minZoom = 10.0;
-  final double _maxZoom = 100.0;
-
+  late double _zoomLevel;
+  
   late double _startZoom;
+
+  NavaidGame({required this.config});
 
   @override
   Color backgroundColor() => AppColors.mapBackground;
@@ -42,13 +45,21 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
   @override
   Future<void> onLoad() async {
     camera.viewfinder.anchor = const Anchor(0.5, 0.25);
-    camera.viewfinder.zoom = _zoomLevel;
-
-    _beacon = BeaconComponent(position: Vector2.zero());
+    
+    _beacon = BeaconComponent(position: config.beaconPosition);
     world.add(_beacon);
 
-    _airplaneModel = AirplaneModel(position: Vector2(-2, 2), heading: 0);
-    atmosphericModel = AtmosphericModel();
+    _airplaneModel = AirplaneModel(
+      position: config.aircraftInitialPosition, 
+      heading: config.aircraftInitialHeading,
+      speed: config.aircraftSpeed,
+    );
+    targetHeading.value = config.aircraftInitialHeading == 0.0 ? 360.0 : config.aircraftInitialHeading;
+    
+    atmosphericModel = AtmosphericModel(
+      windSpeed: config.windSpeed,
+      windDirection: config.windDirection,
+    );
 
     _windIndicator = WindIndicatorComponent();
     world.add(_windIndicator);
@@ -59,6 +70,14 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
 
     _airplaneComponent = AirplaneComponent();
     world.add(_airplaneComponent);
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    _zoomLevel = config.getInitialZoom(size);
+    camera.viewfinder.zoom = _zoomLevel;
+    camera.viewfinder.position = config.getInitialCameraPosition();
   }
 
   @override
@@ -98,7 +117,7 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
 
     if (info.pointerCount > 1) {
       _zoomLevel = _startZoom * info.scale.global.y;
-      _zoomLevel = _zoomLevel.clamp(_minZoom, _maxZoom);
+      _zoomLevel = _zoomLevel.clamp(config.minZoom, config.maxZoom);
       camera.viewfinder.zoom = _zoomLevel;
     }
   }
@@ -106,7 +125,7 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
   @override
   void onScroll(PointerScrollInfo info) {
     _zoomLevel -= info.scrollDelta.global.y * 0.05;
-    _zoomLevel = _zoomLevel.clamp(_minZoom, _maxZoom);
+    _zoomLevel = _zoomLevel.clamp(config.minZoom, config.maxZoom);
     camera.viewfinder.zoom = _zoomLevel;
   }
 }
