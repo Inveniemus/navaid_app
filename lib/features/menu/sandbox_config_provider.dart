@@ -43,4 +43,16 @@ class SandboxConfigNotifier extends _$SandboxConfigNotifier {
   void updateWindSpeed(double spd) {
     state = state.copyWith(windSpeed: spd);
   }
+
+  void updateHoldingInboundCourse(double course) {
+    state = state.copyWith(holdingInboundCourse: course);
+  }
+
+  void updateHoldingIsStandard(bool isStandard) {
+    state = state.copyWith(holdingIsStandard: isStandard);
+  }
+
+  void updateHoldingLegDistance(double distance) {
+    state = state.copyWith(holdingLegDistance: distance);
+  }
 }

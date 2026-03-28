@@ -19,7 +19,7 @@ class NavaidApp extends ConsumerWidget {
     final theme = ref.watch(appThemeProvider);
     
     return MaterialApp(
-      title: 'IFR Trainer',
+      title: 'Holding Patterns Trainer',
       debugShowCheckedModeBanner: false,
       theme: theme.darkTheme,
       initialRoute: '/',

@@ -4,11 +4,12 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:navaid_app/features/game/components/wind_indicator.dart';
+import 'package:navaid_app/features/game/components/wind_indicator_component.dart';
 
 import '../../core/app_colors.dart';
 import 'components/airplane_component.dart';
 import 'components/beacon_component.dart';
+import 'components/holding_pattern_component.dart';
 import 'components/trail_component.dart';
 import 'models/airplane_model.dart';
 import 'models/atmospheric_model.dart';
@@ -34,7 +35,7 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
   late final WindIndicatorComponent _windIndicator;
 
   late double _zoomLevel;
-  
+
   late double _startZoom;
 
   NavaidGame({required this.config});
@@ -45,24 +46,33 @@ class NavaidGame extends FlameGame with ScaleDetector, ScrollDetector {
   @override
   Future<void> onLoad() async {
     camera.viewfinder.anchor = const Anchor(0.5, 0.25);
-    
-    _beacon = BeaconComponent(position: config.beaconPosition);
+
+    final holdingPattern = HoldingPatternComponent(
+      inboundCourse: config.holdingInboundCourse,
+      isStandard: config.holdingIsStandard,
+      legDistance: config.holdingLegDistance,
+      tas: config.aircraftSpeed,
+    );
+
+    _beacon = BeaconComponent(
+      position: config.beaconPosition,
+      holdingPattern: holdingPattern,
+    );
     world.add(_beacon);
 
     _airplaneModel = AirplaneModel(
-      position: config.aircraftInitialPosition, 
+      position: config.aircraftInitialPosition,
       heading: config.aircraftInitialHeading,
       speed: config.aircraftSpeed,
     );
     targetHeading.value = config.aircraftInitialHeading == 0.0 ? 360.0 : config.aircraftInitialHeading;
-    
+
     atmosphericModel = AtmosphericModel(
       windSpeed: config.windSpeed,
       windDirection: config.windDirection,
     );
 
     _windIndicator = WindIndicatorComponent();
-    world.add(_windIndicator);
     camera.viewport.add(_windIndicator);
 
     _trail = TrailComponent(model: _airplaneModel);

@@ -22,29 +22,16 @@ class LandingPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              'IFR Trainer',
+              'Holding Patterns\nTrainer',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.grey,
                 letterSpacing: 2,
               ),
             ),
+
             const SizedBox(height: 80),
-            SizedBox(
-              width: 250,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SandboxFormPage(),
-                    ),
-                  );
-                },
-                child: const Text('SANDBOX'),
-              ),
-            ),
-            const SizedBox(height: 20),
             SizedBox(
               width: 250,
               child: ElevatedButton(
@@ -58,6 +45,21 @@ class LandingPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: null, // Disabled for now
                 child: const Text('MISSIONS'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 250,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SandboxFormPage(),
+                    ),
+                  );
+                },
+                child: const Text('SANDBOX'),
               ),
             ),
           ],

@@ -74,6 +74,34 @@ class SandboxFormPage extends ConsumerWidget {
             ),
 
             const SizedBox(height: 30),
+            _buildSectionTitle('Holding Pattern'),
+            _buildNumberField(
+              label: 'Inbound Course (Degrees)',
+              value: config.holdingInboundCourse,
+              onChanged: (val) {
+                ref.read(sandboxConfigNotifierProvider.notifier).updateHoldingInboundCourse(val);
+              },
+            ),
+            const SizedBox(height: 10),
+            _buildNumberField(
+              label: 'Leg Distance (NM)',
+              value: config.holdingLegDistance,
+              onChanged: (val) {
+                ref.read(sandboxConfigNotifierProvider.notifier).updateHoldingLegDistance(val);
+              },
+            ),
+            const SizedBox(height: 10),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Standard Turns (Right)', style: TextStyle(color: Colors.white70)),
+              activeColor: Colors.orange,
+              value: config.holdingIsStandard,
+              onChanged: (val) {
+                ref.read(sandboxConfigNotifierProvider.notifier).updateHoldingIsStandard(val);
+              },
+            ),
+
+            const SizedBox(height: 30),
             _buildSectionTitle('Atmosphere'),
             _buildNumberField(
               label: 'Wind Direction (Degrees)',

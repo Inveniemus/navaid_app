@@ -26,28 +26,36 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          GameWidget(
-            game: game,
-            overlayBuilderMap: {
-              'InstrumentPanel': (BuildContext context, NavaidGame gameRef) {
-                return InstrumentPanel(game: gameRef);
+      body: SafeArea(
+        child: Stack(
+          children: [
+            GameWidget(
+              game: game,
+              overlayBuilderMap: {
+                'InstrumentPanel': (BuildContext context, NavaidGame gameRef) {
+                  return InstrumentPanel(game: gameRef);
+                },
               },
-            },
-            initialActiveOverlays: const ['InstrumentPanel'],
-          ),
-          Positioned(
-            top: 5,
-            left: 5,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white, size: 15),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              initialActiveOverlays: const ['InstrumentPanel'],
             ),
-          ),
-        ],
+            Positioned(
+              top: 5,
+              left: 5,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 15),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

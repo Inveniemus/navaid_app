@@ -14,6 +14,10 @@ class GameConfiguration {
   final double minZoom;
   final double maxZoom;
 
+  final double holdingInboundCourse;
+  final bool holdingIsStandard;
+  final double holdingLegDistance;
+
   const GameConfiguration({
     required this.aircraftInitialPosition,
     this.aircraftInitialHeading = 0.0,
@@ -23,6 +27,9 @@ class GameConfiguration {
     this.windDirection = 0.0,
     this.minZoom = 1.0,
     this.maxZoom = 200.0,
+    this.holdingInboundCourse = 45.0,
+    this.holdingIsStandard = true,
+    this.holdingLegDistance = 2.0,
   });
 
   factory GameConfiguration.defaultConfig() {
@@ -41,6 +48,9 @@ class GameConfiguration {
     double? windDirection,
     double? minZoom,
     double? maxZoom,
+    double? holdingInboundCourse,
+    bool? holdingIsStandard,
+    double? holdingLegDistance,
   }) {
     return GameConfiguration(
       aircraftInitialPosition: aircraftInitialPosition ?? this.aircraftInitialPosition,
@@ -51,6 +61,9 @@ class GameConfiguration {
       windDirection: windDirection ?? this.windDirection,
       minZoom: minZoom ?? this.minZoom,
       maxZoom: maxZoom ?? this.maxZoom,
+      holdingInboundCourse: holdingInboundCourse ?? this.holdingInboundCourse,
+      holdingIsStandard: holdingIsStandard ?? this.holdingIsStandard,
+      holdingLegDistance: holdingLegDistance ?? this.holdingLegDistance,
     );
   }
 
@@ -63,7 +76,7 @@ class GameConfiguration {
 
     double width = (aircraftInitialPosition.x - beaconPosition.x).abs();
     double height = (aircraftInitialPosition.y - beaconPosition.y).abs();
-    
+
     if (width == 0 && height == 0) return 40.0;
 
     width *= 3;
